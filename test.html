@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🎲 Game Xúc Xắc Vui Học 🎲</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <style>
+      body {
+        margin: 0;
+        font-family: "Comic Sans MS", sans-serif;
+        background: linear-gradient(135deg, #ffe5ec, #ffcad4);
+        color: #333;
+        transition: background 0.5s, color 0.5s;
+      }
+
+      input,
+      select,
+      button {
+        border-radius: 999px;
+        padding: 10px;
+        border: none;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      input {
+        border: 2px solid #ff8fa3;
+        text-align: center;
+        outline: none;
+        width: 70%;
+        max-width: 250px;
+      }
+      input:focus {
+        border-color: #ff4d6d;
+        box-shadow: 0 0 8px rgba(255, 77, 109, 0.3);
+      }
+      button {
+        margin-top: 16px;
+        background: #e30931;
+        color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      button:hover {
+        background: #ff4d6d;
+        transform: scale(1.05);
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      #welcomeScreen {
+        position: fixed;
+        inset: 0;
+        background: #ff8fa3;
+        color: #fff;
+        z-index: 2000;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #gameHeader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: #ff8fa3;
+        color: #fff;
+        padding: 10px 20px;
+        display: none;
+        align-items: center;
+        justify-content: space-between;
+        z-index: 100;
+      }
+
+      .leftButtons {
+        display: flex;
+        gap: 5px;
+        margin-right: 40px;
+      }
+
+      .leftButtons button#settingsButton {
+        background: transparent;
+        border: none;
+        padding: 0.5rem;
+        font-size: 1.5rem;
+        color: #333;
+      }
+      .leftButtons button#settingsButton:active {
+        color: #ff8fa3;
+      }
+
+      /* Popup overlay */
+      .popup-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.6);
+        display: none; /* Ẩn mặc định */
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        z-index: 999;
+      }
+
+      /* Khung popup */
+      .popup-settings {
+        background: #fff;
+        padding: 1rem;
+        border-radius: 12px;
+        width: 100%;
+        max-width: 320px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        text-align: left;
+        font-size: 0.9rem;
+      }
+
+      /* Tiêu đề */
+      .popup-settings h2 {
+        font-size: 1.25rem;
+        margin-bottom: 0.75rem;
+        text-align: center;
+      }
+      .popup-settings h3 {
+        font-size: 1rem;
+        margin: 1rem 0 0.5rem;
+        text-align: left;
+      }
+
+      /* Input checkbox và range */
+      .popup-settings label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+      }
+      .popup-settings input[type="range"] {
+        width: 100%;
+        accent-color: #ff8fa3; /* màu của thanh kéo */
+      }
+      .popup-settings button#closeSettings {
+        background: #ff8fa3;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        color: white;
+        width: 100%;
+        margin-top: 1rem;
+        cursor: pointer;
+        font-weight: bold;
+      }
+      .popup-settings button#closeSettings:hover {
+        background: #ff7388;
+      }
+
+      /* Color boxes */
+      .color-options {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.5rem;
+      }
+      .color-box {
+        flex: 1;
+        padding-bottom: 24%;
+        border: 2px solid transparent;
+        border-radius: 6px;
+        cursor: pointer;
+        position: relative;
+      }
+      .color-box.selected {
+        border-color: black;
+        box-shadow: 0 0 0 2px white, 0 0 0 4px black;
+      }
+      .color-box::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 4px;
+        background: inherit;
+      }
+
+      .game-container {
+        width: 500px;
+        height: 500px;
+        background: rgba(255, 143, 163, 0.1);
+        border: 2px solid #ff8fa3;
+        border-radius: 32px;
+        padding: 24px;
+        box-sizing: border-box;
+        perspective: 600px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-evenly;
+        text-align: center;
+      }
+
+      .progress-bar {
+        width: 90%;
+        height: 20px;
+        background: #ffe5ec;
+        border-radius: 999px;
+        overflow: hidden;
+        box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .progress {
+        height: 100%;
+        width: 100%;
+        transition: width 1s linear, background 0.5s;
+      }
+
+      /* Container xúc xắc để căn giữa */
+      .dice-container {
+        display: flex;
+        gap: 32px;
+        justify-content: center;
+        align-items: center;
+        margin: 16px 0;
+        perspective: 800px; /* Để có 3D */
+      }
+      .cube {
+        width: 100px;
+        height: 100px;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.8s;
+      }
+      .cube.rolling {
+        animation: roll3D 0.8s ease-in-out;
+      }
+      .face {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: white;
+        border-radius: 16px;
+        border: 2px solid #ff8fa3;
+        display: block;
+      }
+
+      .dot {
+        width: 18px;
+        height: 18px;
+        background: #ff4d6d;
+        border-radius: 50%;
+        position: absolute;
+      }
+
+      /* Vị trí của chấm */
+      .dot-center {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+      .dot-center-left {
+        top: 50%;
+        left: 20%;
+        transform: translate(-50%, -50%);
+      }
+      .dot-center-right {
+        top: 50%;
+        right: 20%;
+        transform: translate(50%, -50%);
+      }
+
+      .dot-top-left {
+        top: 20%;
+        left: 20%;
+        transform: translate(-50%, -50%);
+      }
+      .dot-top-right {
+        top: 20%;
+        right: 20%;
+        transform: translate(50%, -50%);
+      }
+      .dot-bottom-left {
+        bottom: 20%;
+        left: 20%;
+        transform: translate(-50%, 50%);
+      }
+      .dot-bottom-right {
+        bottom: 20%;
+        right: 20%;
+        transform: translate(50%, 50%);
+      }
+
+      /* Định nghĩa mặt cube bằng transform */
+      .face1 {
+        transform: rotateY(0deg) translateZ(50px);
+      }
+      .face2 {
+        transform: rotateY(90deg) translateZ(50px);
+      }
+      .face3 {
+        transform: rotateY(-90deg) translateZ(50px);
+      }
+      .face4 {
+        transform: rotateX(90deg) translateZ(50px);
+      }
+      .face5 {
+        transform: rotateX(-90deg) translateZ(50px);
+      }
+      .face6 {
+        transform: rotateY(180deg) translateZ(50px);
+      }
+
+      .dice {
+        width: 100px;
+        height: 100px;
+        border-radius: 16px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      #rollButton {
+        padding: 16px 32px;
+        font-size: 1.3rem;
+        border-radius: 999px;
+      }
+
+      #popupBackdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 500;
+        display: none;
+        align-items: center;
+        justify-content: center;
+      }
+      #popup {
+        background: white;
+        padding: 16px;
+        border-radius: 20px;
+        min-width: 320px;
+        max-width: 400px;
+        max-height: 80vh;
+        overflow-y: auto;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      #popup h2 {
+        margin-top: 0;
+        color: #e30931;
+        font-size: 1.5rem;
+      }
+
+      #popup h3 {
+        margin: 12px 0 4px 0;
+        font-size: 1.1rem;
+        color: #333;
+      }
+
+      #popup table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 8px 0;
+      }
+
+      #popup table th,
+      #popup table td {
+        border: 1px solid #ddd;
+        padding: 4px;
+        font-size: 0.85rem;
+      }
+
+      #popup table th {
+        background: #ff8fa3;
+        color: white;
+      }
+
+      #popup ul {
+        padding-left: 0;
+      }
+
+      #popup ul li {
+        font-size: 0.9rem;
+      }
+
+      .guess-options {
+        width: 90%;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+        gap: 12px;
+      }
+
+      .guess-option {
+        padding: 12px;
+        border-radius: 16px;
+        background: #ff8fa3;
+        color: #fff;
+        font-size: 1.1rem;
+        cursor: pointer;
+        text-align: center;
+        transition: transform 0.2s;
+      }
+      .guess-option:hover {
+        background: #ff4d6d;
+        transform: scale(1.1);
+      }
+      .guess-option.selected {
+        background: #ff4d6d;
+        transform: scale(1.1);
+      }
+
+      @keyframes roll3D {
+        0% {
+          transform: rotate3d(1, 1, 0, 0deg) scale(1);
+        }
+        25% {
+          transform: rotate3d(1, 1, 0, 180deg) scale(1.1);
+        }
+        50% {
+          transform: rotate3d(1, 1, 0, 360deg) scale(1.1);
+        }
+        75% {
+          transform: rotate3d(1, 1, 0, 540deg) scale(1.1);
+        }
+        100% {
+          transform: rotate3d(1, 1, 0, 720deg) scale(1);
+        }
+      }
+
+      .dice.rolling {
+        animation: roll3D 0.8s ease-in-out;
+        transform-origin: center center;
+        backface-visibility: hidden;
+        will-change: transform;
+      }
+
+      .fireworks {
+        position: fixed;
+        inset: 0;
+        background: url("https://i.pinimg.com/originals/42/29/76/4229765e2a4957c0b1a4667424222c3b.gif")
+          center/cover no-repeat;
+        z-index: 999;
+        pointer-events: none;
+        animation: fadeOut 2s forwards;
+      }
+      @media (max-width: 480px) {
+        #welcomeScreen h1 {
+          font-size: 1.5rem; /* Thu nhỏ tiêu đề trên điện thoại */
+          padding: 0 12px; /* Thêm padding để không bị dính sát lề */
+          text-align: center;
+        }
+        #welcomeScreen p {
+          font-size: 0.9rem;
+        }
+        #playerNameInput {
+          width: 90%;
+          font-size: 0.9rem;
+        }
+        #confirmNameButton {
+          padding: 8px 16px;
+          font-size: 0.9rem;
+        }
+      }
+
+      @keyframes fadeOut {
+        to {
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Màn hình chào hỏi -->
+    <div id="welcomeScreen">
+      <h1>🎲 Game Đoán Tổng Xúc Xắc 🎲</h1>
+      <p>Nhập tên của bạn:</p>
+      <input id="playerNameInput" placeholder="Ví dụ: Nguyễn Văn A" />
+      <button id="confirmNameButton" disabled>Xác nhận</button>
+    </div>
+
+    <!-- Header -->
+    <div id="gameHeader">
+      <span id="playerDisplay"></span>
+      <div class="leftButtons">
+        <button id="settingsButton">
+          <i class="fa-solid fa-gear"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Popup Cài đặt -->
+    <div
+      id="settingsPopupBackdrop"
+      style="display: none"
+      class="popup-backdrop"
+    >
+      <div id="settingsPopup" class="popup-settings">
+        <h2>Cài đặt</h2>
+        <!-- Điều khiển âm thanh -->
+        <label
+          >Âm lượng nhạc:
+          <input
+            id="bgmusicVolume"
+            type="range"
+            min="0"
+            max="1"
+            step="0.1"
+            value="1"
+          />
+        </label>
+        <!-- Chọn màu xúc xắc -->
+        <h3>Chọn màu xúc xắc</h3>
+        <div id="diceColors" class="color-options">
+          <div
+            class="color-box"
+            style="background: #ff4d4d"
+            data-color="#ff4d4d"
+          ></div>
+          <div
+            class="color-box"
+            style="background: #00ff7f"
+            data-color="#00ff7f"
+          ></div>
+          <div
+            class="color-box"
+            style="background: #3498db"
+            data-color="#3498db"
+          ></div>
+          <div
+            class="color-box"
+            style="background: #ffdf40"
+            data-color="#ffdf40"
+          ></div>
+        </div>
+        <button id="closeSettings">Đóng</button>
+      </div>
+    </div>
+
+    <!-- Khu vực chính -->
+    <div class="game-container">
+      <div class="progress-bar"><div class="progress" id="progress"></div></div>
+      <div class="dice-container">
+        <div class="cube" id="dice1">
+          <div class="face face1">
+            <span class="dot dot-center"></span>
+          </div>
+
+          <div class="face face2">
+            <span class="dot dot-top-left"></span>
+            <span class="dot dot-bottom-right"></span>
+          </div>
+
+          <div class="face face3">
+            <span class="dot dot-top-left"></span>
+            <span class="dot dot-center"></span>
+            <span class="dot dot-bottom-right"></span>
+          </div>
+
+          <div class="face face4">
+            <span class="dot dot-top-left"></span>
+            <span class="dot dot-top-right"></span>
+            <span class="dot dot-bottom-left"></span>
+            <span class="dot dot-bottom-right"></span>
+          </div>
+
+          <div class="face face5">
+            <span class="dot dot-center"></span>
+            <span class="dot dot-top-left"></span>
+            <span class="dot dot-top-right"></span>
+            <span class="dot dot-bottom-left"></span>
+            <span class="dot dot-bottom-right"></span>
+          </div>
+
+          <div class="face face6">
+            <span class="dot dot-top-left"></span>
+            <span class="dot dot-top-right"></span>
+            <span class="dot dot-center-left"></span>
+            <span class="dot dot-center-right"></span>
+            <span class="dot dot-bottom-left"></span>
+            <span class="dot dot-bottom-right"></span>
+          </div>
+        </div>
+        <div class="cube" id="dice2">
+          <div class="face face1">
+            <span class="dot dot-center"></span>
+          </div>
+
+          <div class="face face2">
+            <span class="dot dot-top-left"></span>
+            <span class="dot dot-bottom-right"></span>
+          </div>
+
+          <div class="face face3">
+            <span class="dot dot-top-left"></span>
+            <span class="dot dot-center"></span>
+            <span class="dot dot-bottom-right"></span>
+          </div>
+
+          <div class="face face4">
+            <span class="dot dot-top-left"></span>
+            <span class="dot dot-top-right"></span>
+            <span class="dot dot-bottom-left"></span>
+            <span class="dot dot-bottom-right"></span>
+          </div>
+
+          <div class="face face5">
+            <span class="dot dot-center"></span>
+            <span class="dot dot-top-left"></span>
+            <span class="dot dot-top-right"></span>
+            <span class="dot dot-bottom-left"></span>
+            <span class="dot dot-bottom-right"></span>
+          </div>
+
+          <div class="face face6">
+            <span class="dot dot-top-left"></span>
+            <span class="dot dot-top-right"></span>
+            <span class="dot dot-center-left"></span>
+            <span class="dot dot-center-right"></span>
+            <span class="dot dot-bottom-left"></span>
+            <span class="dot dot-bottom-right"></span>
+          </div>
+        </div>
+      </div>
+      <button id="rollButton">🎲 Lắc xúc xắc</button>
+      <div id="guessOptions" class="guess-options"></div>
+      <div style="margin: 10px">
+        Lượt còn lại: <span id="remaining">6</span>
+      </div>
+    </div>
+
+    <!-- Popup thông báo -->
+    <div id="popupBackdrop"><div id="popup"></div></div>
+
+    <!-- Âm thanh -->
+    <audio
+      id="bgmusic"
+      src="happy-relaxing-loop.mp3"
+      loop
+      autoplay
+    ></audio>
+    <audio id="clickSound" src="click.mp3"></audio>
+    <audio id="rollSound" src="./dice-croll.mp3" preload="auto"></audio>
+    <audio id="tickSound" src="./timer_countdown.mp3"></audio>
+    <audio id="winSound" src="win.mp3"></audio>
+    <audio id="loseSound" src="lose.mp3"></audio>
+
+    <script>
+      // Biến game
+      let playerName = sessionStorage.getItem("playerName") || "";
+      let remaining = 6,
+        timer = 60,
+        timerInterval,
+        score = 0,
+        history = [],
+        selectedGuess = null,
+        paused = false;
+
+      const playerNameInput = document.getElementById("playerNameInput"),
+        confirmButton = document.getElementById("confirmNameButton"),
+        playerDisplay = document.getElementById("playerDisplay"),
+        rollButton = document.getElementById("rollButton"),
+        progress = document.getElementById("progress"),
+        popup = document.getElementById("popup"),
+        popupBackdrop = document.getElementById("popupBackdrop"),
+        dice1 = document.getElementById("dice1"),
+        dice2 = document.getElementById("dice2"),
+        bgmusic = document.getElementById("bgmusic"),
+        clickSound = document.getElementById("clickSound"),
+        rollSound = document.getElementById("rollSound"),
+        tickSound = document.getElementById("tickSound"),
+        winSound = document.getElementById("winSound"),
+        loseSound = document.getElementById("loseSound"),
+        soundToggle = document.getElementById("soundToggle"),
+        settingsButton = document.getElementById("settingsButton"),
+        settingsPopupBackdrop = document.getElementById(
+          "settingsPopupBackdrop"
+        ),
+        bgmusicVolume = document.getElementById('bgmusicVolume');
+        closeSettings = document.getElementById("closeSettings");
+      tickSoundPlayed = false;
+
+
+      bgmusicVolume.addEventListener('input', (e) => {
+  bgmusic.volume = e.target.value;
+});
+
+      // Toggle popup
+      settingsButton.onclick = () => {
+        paused = true;
+        settingsPopupBackdrop.style.display = "flex";
+      };
+
+      closeSettings.onclick = () => {
+        settingsPopupBackdrop.style.display = "none";
+        paused = false;
+      };
+
+      // Chọn màu xúc xắc
+      document.querySelectorAll("#diceColors .color-box").forEach((box) => {
+        box.onclick = () => {
+          // Bỏ chọn cũ
+          document
+            .querySelectorAll("#diceColors .color-box")
+            .forEach((b) => b.classList.remove("selected"));
+          box.classList.add("selected");
+
+          const color = box.dataset.color;
+          localStorage.setItem("diceColor", color);
+
+          // Đổi màu chấm tròn
+          document.querySelectorAll(".cube .dot").forEach((dot) => {
+            dot.style.backgroundColor = color;
+          });
+
+          // Đổi màu viền các mặt xúc xắc
+          document.querySelectorAll(".cube .face").forEach((face) => {
+            face.style.border = `2px solid ${color}`;
+          });
+        };
+      });
+
+      // Tạo ô chọn tổng
+      const guessOptions = document.getElementById("guessOptions");
+      for (let i = 2; i <= 12; i++) {
+        const btn = document.createElement("div");
+        btn.className = "guess-option";
+        btn.innerText = i;
+        btn.onclick = () => {
+          selectedGuess = i;
+          document
+            .querySelectorAll(".guess-option")
+            .forEach((b) => b.classList.remove("selected"));
+          btn.classList.add("selected");
+        };
+        guessOptions.appendChild(btn);
+      }
+
+      // Nếu có tên -> hiện game luôn
+      if (playerName) {
+        document.getElementById("welcomeScreen").style.display = "none";
+        playerDisplay.innerText = playerName;
+        document.getElementById("gameHeader").style.display = "flex";
+        showPopup(
+          `
+      🎲 Xin chào <strong>${playerName}</strong>!<br><br>
+      🎮 <strong>Luật chơi:</strong><br>
+      • Bạn có 60 giây và 6 lượt lắc xúc xắc.<br>
+      • Trước mỗi lượt, hãy chọn <strong>tổng</strong> bạn dự đoán (2–12).<br>
+      • Nếu bạn đoán <span style="color:green;">đúng</span>: bạn nhận <strong>+3 điểm</strong> 🎉<br>
+      • Nếu bạn đoán <span style="color:red;">sai</span>: bạn vẫn nhận <strong>+1 điểm</strong> 👍<br>
+      • Tổng điểm của bạn được tính sau 6 lượt hoặc khi hết thời gian.<br><br>
+      💡 Hãy cố gắng đoán đúng thật nhiều để đạt điểm cao nhất nhé!
+    `,
+          "Bắt đầu",
+          startGame
+        );
+      }
+
+      // Xử lý nhập tên
+      playerNameInput.oninput = () =>
+        (confirmButton.disabled = playerNameInput.value.trim() === "");
+      confirmButton.onclick = () => {
+        playerName = playerNameInput.value.trim();
+        sessionStorage.setItem("playerName", playerName);
+        document.getElementById("welcomeScreen").style.display = "none";
+        playerDisplay.innerText = playerName;
+        document.getElementById("gameHeader").style.display = "flex";
+        bgmusic.play();
+        showPopup(
+          `
+      🎲 Xin chào <strong>${playerName}</strong>!<br><br>
+      🎮 <strong>Luật chơi:</strong><br>
+      • Bạn có 60 giây và 6 lượt lắc xúc xắc.<br>
+      • Trước mỗi lượt, hãy chọn <strong>tổng</strong> bạn dự đoán (2–12).<br>
+      • Nếu bạn đoán <span style="color:green;">đúng</span>: bạn nhận <strong>+3 điểm</strong> 🎉<br>
+      • Nếu bạn đoán <span style="color:red;">sai</span>: bạn vẫn nhận <strong>+1 điểm</strong> 👍<br>
+      • Tổng điểm của bạn được tính sau 6 lượt hoặc khi hết thời gian.<br><br>
+      💡 Hãy cố gắng đoán đúng thật nhiều để đạt điểm cao nhất nhé!
+    `,
+          "Bắt đầu",
+          startGame
+        );
+      };
+
+      // Popup
+      function showPopup(msg, btnText, cb) {
+        paused = true;
+        popup.innerHTML = `<p>${msg}</p><button id="popupOk">${btnText}</button>`;
+        popupBackdrop.style.display = "flex";
+        document.getElementById("popupOk").onclick = () => {
+          popupBackdrop.style.display = "none";
+          paused = false;
+          if (cb) cb();
+        };
+      }
+
+      // Xử lý lắc
+      rollButton.onclick = () => {
+        clickSound.play();
+        if (!selectedGuess) {
+          showPopup(
+            `⚠️ Vui lòng chọn <strong>một tổng bất kỳ</strong> trước khi lắc!`,
+            "OK"
+          );
+          return;
+        }
+        rollSound.currentTime = 0; // tua về đầu
+        rollSound.play();
+        dice1.classList.add("rolling");
+        dice2.classList.add("rolling");
+        setTimeout(() => {
+          let d1 = Math.floor(Math.random() * 6) + 1,
+            d2 = Math.floor(Math.random() * 6) + 1;
+          setDiceFace(dice1, d1);
+          setDiceFace(dice2, d2);
+          dice1.classList.remove("rolling");
+          dice2.classList.remove("rolling");
+          checkGuess(d1 + d2);
+        }, 800);
+      };
+
+      function setDiceFace(cube, num) {
+        let x = 0,
+          y = 0;
+        switch (num) {
+          case 1:
+            x = 0;
+            y = 0;
+            break;
+          case 2:
+            x = 0;
+            y = -90; // Đổi 2 với 3
+            break;
+          case 3:
+            x = 0;
+            y = 90; // Đổi 3 với 2
+            break;
+          case 4:
+            x = -90;
+            y = 0; // Đổi 4 với 5
+            break;
+          case 5:
+            x = 90;
+            y = 0; // Đổi 5 với 4
+            break;
+          case 6:
+            x = 0;
+            y = 180;
+            break;
+        }
+        cube.style.transform = `rotateX(${x}deg) rotateY(${y}deg)`;
+      }
+
+      function checkGuess(sum) {
+        remaining--;
+        document.getElementById("remaining").innerText = remaining;
+
+        let correct = selectedGuess === sum;
+        let message; // khai báo biến message
+        if (correct) {
+          score += 3;
+          winSound.play();
+          showFireworks();
+          message = `🎉 Đúng! Bạn đã chọn tổng <strong>${selectedGuess}</strong> và xúc xắc ra <strong>${sum}</strong>.<br><strong>+3 điểm</strong>`;
+        } else {
+          score += 1;
+          loseSound.play();
+          message = `❌ Sai! Bạn đã chọn tổng <strong>${selectedGuess}</strong> nhưng xúc xắc ra <strong>${sum}</strong>.<br><strong>+1 điểm</strong>`;
+        }
+
+        history.push({
+          guess: selectedGuess,
+          sum,
+          correct,
+          points: correct ? 3 : 1,
+        });
+
+        selectedGuess = null;
+        document
+          .querySelectorAll(".guess-option")
+          .forEach((b) => b.classList.remove("selected"));
+
+        // Kiểm tra end game
+        if (remaining === 0 || timer === 0) {
+          showPopup(message, "Xem kết quả", endGame);
+        } else {
+          showPopup(message, "OK");
+        }
+      }
+
+      function showFireworks() {
+        const fw = document.createElement("div");
+        fw.className = "fireworks";
+        document.body.appendChild(fw);
+        setTimeout(() => fw.remove(), 2000);
+      }
+
+      function startGame() {
+        timer = 60;
+        updateProgress();
+        timerInterval = setInterval(() => {
+          if (!paused) {
+            timer--;
+            updateProgress();
+            if (timer === 10 && !tickSoundPlayed) {
+              tickSound.play();
+              tickSoundPlayed = true;
+            }
+            if (timer <= 0) {
+              clearInterval(timerInterval);
+              endGame();
+            }
+          }
+        }, 1000);
+      }
+
+      function updateProgress() {
+        const percent = (timer / 60) * 100;
+        progress.style.width = percent + "%";
+
+        // Tạo màu gradient: bắt đầu xanh lá cây #00ff7f, gần hết thì đỏ #ff4d4d
+        // Tỉ lệ giữa 60s và 0s
+        const green = { r: 0, g: 255, b: 127 };
+        const red = { r: 255, g: 77, b: 77 };
+        const ratio = 1 - timer / 60;
+        const r = Math.round(green.r + (red.r - green.r) * ratio);
+        const g = Math.round(green.g + (red.g - green.g) * ratio);
+        const b = Math.round(green.b + (red.b - green.b) * ratio);
+        progress.style.background = `rgb(${r},${g},${b})`;
+      }
+
+    function endGame() {
+  clearInterval(timerInterval);
+  tickSound.pause();
+  tickSound.currentTime = 0;
+
+  // Bảng xác suất
+  let probabilityTable = `
+    <h3>Phân bố xác suất tổng xúc xắc:</h3>
+    <table style="width:100%; border-collapse: collapse; margin:8px 0; font-size:0.9rem; text-align:center;">
+      <thead>
+        <tr style="background:#ff8fa3; color:white;">
+          <th>Tổng</th>
+          <th>Số cách</th>
+          <th>Xác suất (%)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>2</td><td>1</td><td>2.78%</td></tr>
+        <tr><td>3</td><td>2</td><td>5.56%</td></tr>
+        <tr><td>4</td><td>3</td><td>8.33%</td></tr>
+        <tr><td>5</td><td>4</td><td>11.11%</td></tr>
+        <tr><td>6</td><td>5</td><td>13.89%</td></tr>
+        <tr><td>7</td><td>6</td><td>16.67%</td></tr>
+        <tr><td>8</td><td>5</td><td>13.89%</td></tr>
+        <tr><td>9</td><td>4</td><td>11.11%</td></tr>
+        <tr><td>10</td><td>3</td><td>8.33%</td></tr>
+        <tr><td>11</td><td>2</td><td>5.56%</td></tr>
+        <tr><td>12</td><td>1</td><td>2.78%</td></tr>
+      </tbody>
+    </table>
+    <p style="text-align:left; padding:0 8px;">💡 Tổng 7 dễ ra nhất (~16.7%). Tổng 2 và 12 khó ra nhất (~2.8%). Chọn các tổng gần 7 để tăng tỷ lệ thắng.</p>
+  `;
+
+  // Lịch sử không scroll
+  let historyHTML = `<h3>Lịch sử lượt chơi:</h3><ul style="text-align:left; padding-left:0;">`;
+  if (history.length > 0) {
+    history.forEach((item, index) => {
+      historyHTML += `
+        <li style="list-style:none; padding:4px 0; border-bottom:1px solid #ddd;">
+          Lượt ${index + 1}: bạn chọn <b>${item.guess}</b>, tổng xúc xắc = ${item.sum}, 
+          ${
+            item.correct
+              ? '<span style="color:green;">Đúng (+3)</span>'
+              : '<span style="color:red;">Sai (+1)</span>'
+          }
+        </li>
+      `;
+    });
+    historyHTML += "</ul>";
+  } else {
+    historyHTML += '<p style="text-align:center; padding:8px 0;">Chưa có lịch sử nào!</p>';
+  }
+
+  // Hiển thị popup tổng hợp
+  popupBackdrop.style.display = "flex";
+  popup.innerHTML = `
+    <h2>Tổng kết</h2>
+    <h2>Bạn được ${score} điểm</h2>
+    ${probabilityTable}
+    ${historyHTML}
+    <button id="popupOk" style="margin-top: 12px;">Chơi lại</button>
+  `;
+
+  document.getElementById("popupOk").onclick = resetGame;
+}
+
+
+      function resetGame() {
+        clearInterval(timerInterval);
+        tickSound.pause();
+        tickSound.currentTime = 0;
+        remaining = 6;
+        score = 0;
+        history = [];
+        selectedGuess = null;
+        timer = 60;
+        document.getElementById("remaining").innerText = remaining;
+        progress.style.width = "100%";
+        document
+          .querySelectorAll(".guess-option")
+          .forEach((b) => b.classList.remove("selected"));
+        showPopup(
+          `
+    🎲 Xin chào <strong>${playerName}</strong>!<br><br>
+    🎮 <strong>Luật chơi:</strong><br>
+    • Bạn có 60 giây và 6 lượt lắc xúc xắc.<br>
+    • Trước mỗi lượt, hãy chọn <strong>tổng</strong> bạn dự đoán (2–12).<br>
+    • Nếu bạn đoán <span style="color:green;">đúng</span>: bạn nhận <strong>+3 điểm</strong> 🎉<br>
+    • Nếu bạn đoán <span style="color:red;">sai</span>: bạn vẫn nhận <strong>+1 điểm</strong> 👍<br>
+    • Tổng điểm của bạn được tính sau 6 lượt hoặc khi hết thời gian.<br><br>
+    💡 Hãy cố gắng đoán đúng thật nhiều để đạt điểm cao nhất nhé!
+  `,
+          "Bắt đầu",
+          startGame
+        );
+      }
+
+      soundToggle.onclick = () => {
+        const muted = !bgmusic.muted; // đảo trạng thái
+
+        bgmusic.muted = muted;
+        clickSound.muted = muted;
+        rollSound.muted = muted;
+        tickSound.muted = muted;
+        winSound.muted = muted;
+        loseSound.muted = muted;
+
+        soundToggle.innerHTML = muted
+          ? '<i class="fa-solid fa-volume-xmark"></i>'
+          : '<i class="fa-solid fa-volume-high"></i>';
+      };
+    </script>
+  </body>
+</html>
