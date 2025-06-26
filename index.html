@@ -188,23 +188,20 @@
       }
 
       .game-container {
-        width: 500px;
-        height: 500px;
+        width: 90vw;
+        max-width: 500px;
+        padding: 16px;
+        box-sizing: border-box;
         background: rgba(255, 143, 163, 0.1);
         border: 2px solid #ff8fa3;
         border-radius: 32px;
-        padding: 24px;
-        box-sizing: border-box;
+        margin: 2rem auto;
+        text-align: center;
         perspective: 600px;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: space-evenly;
-        text-align: center;
       }
 
       .progress-bar {
@@ -344,11 +341,11 @@
         padding: 16px;
         border-radius: 20px;
         min-width: 320px;
+        width: 90vw;
         max-width: 400px;
-        max-height: 80vh;
-        overflow-y: auto;
+        max-height: none; /* không giới hạn */
+        overflow-y: visible; /* không thanh cuộn */
         text-align: center;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
       }
 
       #popup h2 {
@@ -638,12 +635,7 @@
     <div id="popupBackdrop"><div id="popup"></div></div>
 
     <!-- Âm thanh -->
-    <audio
-      id="bgmusic"
-      src="happy-relaxing-loop.mp3"
-      loop
-      autoplay
-    ></audio>
+    <audio id="bgmusic" src="happy-relaxing-loop.mp3" loop autoplay></audio>
     <audio id="clickSound" src="click.mp3"></audio>
     <audio id="rollSound" src="./dice-croll.mp3" preload="auto"></audio>
     <audio id="tickSound" src="./timer_countdown.mp3"></audio>
@@ -681,14 +673,13 @@
         settingsPopupBackdrop = document.getElementById(
           "settingsPopupBackdrop"
         ),
-        bgmusicVolume = document.getElementById('bgmusicVolume');
-        closeSettings = document.getElementById("closeSettings");
+        bgmusicVolume = document.getElementById("bgmusicVolume");
+      closeSettings = document.getElementById("closeSettings");
       tickSoundPlayed = false;
 
-
-      bgmusicVolume.addEventListener('input', (e) => {
-  bgmusic.volume = e.target.value;
-});
+      bgmusicVolume.addEventListener("input", (e) => {
+        bgmusic.volume = e.target.value;
+      });
 
       // Toggle popup
       settingsButton.onclick = () => {
@@ -935,13 +926,13 @@
         progress.style.background = `rgb(${r},${g},${b})`;
       }
 
-    function endGame() {
-  clearInterval(timerInterval);
-  tickSound.pause();
-  tickSound.currentTime = 0;
+      function endGame() {
+        clearInterval(timerInterval);
+        tickSound.pause();
+        tickSound.currentTime = 0;
 
-  // Bảng xác suất
-  let probabilityTable = `
+        // Bảng xác suất
+        let probabilityTable = `
     <h3>Phân bố xác suất tổng xúc xắc:</h3>
     <table style="width:100%; border-collapse: collapse; margin:8px 0; font-size:0.9rem; text-align:center;">
       <thead>
@@ -968,13 +959,15 @@
     <p style="text-align:left; padding:0 8px;">💡 Tổng 7 dễ ra nhất (~16.7%). Tổng 2 và 12 khó ra nhất (~2.8%). Chọn các tổng gần 7 để tăng tỷ lệ thắng.</p>
   `;
 
-  // Lịch sử không scroll
-  let historyHTML = `<h3>Lịch sử lượt chơi:</h3><ul style="text-align:left; padding-left:0;">`;
-  if (history.length > 0) {
-    history.forEach((item, index) => {
-      historyHTML += `
+        // Lịch sử không scroll
+        let historyHTML = `<h3>Lịch sử lượt chơi:</h3><ul style="text-align:left; padding-left:0;">`;
+        if (history.length > 0) {
+          history.forEach((item, index) => {
+            historyHTML += `
         <li style="list-style:none; padding:4px 0; border-bottom:1px solid #ddd;">
-          Lượt ${index + 1}: bạn chọn <b>${item.guess}</b>, tổng xúc xắc = ${item.sum}, 
+          Lượt ${index + 1}: bạn chọn <b>${item.guess}</b>, tổng xúc xắc = ${
+              item.sum
+            }, 
           ${
             item.correct
               ? '<span style="color:green;">Đúng (+3)</span>'
@@ -982,15 +975,16 @@
           }
         </li>
       `;
-    });
-    historyHTML += "</ul>";
-  } else {
-    historyHTML += '<p style="text-align:center; padding:8px 0;">Chưa có lịch sử nào!</p>';
-  }
+          });
+          historyHTML += "</ul>";
+        } else {
+          historyHTML +=
+            '<p style="text-align:center; padding:8px 0;">Chưa có lịch sử nào!</p>';
+        }
 
-  // Hiển thị popup tổng hợp
-  popupBackdrop.style.display = "flex";
-  popup.innerHTML = `
+        // Hiển thị popup tổng hợp
+        popupBackdrop.style.display = "flex";
+        popup.innerHTML = `
     <h2>Tổng kết</h2>
     <h2>Bạn được ${score} điểm</h2>
     ${probabilityTable}
@@ -998,9 +992,8 @@
     <button id="popupOk" style="margin-top: 12px;">Chơi lại</button>
   `;
 
-  document.getElementById("popupOk").onclick = resetGame;
-}
-
+        document.getElementById("popupOk").onclick = resetGame;
+      }
 
       function resetGame() {
         clearInterval(timerInterval);
