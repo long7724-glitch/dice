@@ -713,21 +713,22 @@
     position: relative; /* đảm bảo bóng bám đúng */
     width: 80px;
     height: 80px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
   }
 
-  .cube-shadow {
+.cube-shadow {
     position: absolute;
-    width: 90px;
-    height: 14px;
-    bottom: -6px;
+    width: 70px; /* vừa với cube nhỏ hơn */
+    height: 12px;
+    bottom: -8px;
     left: 50%;
-    transform: translateX(-50%) scale(0.8);
-    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.5), transparent 70%);
-    opacity: 0.5;
-    z-index: -1; /* nằm dưới cube */
+    transform: translateX(-50%) scale(0.9);
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.4), transparent 70%);
+    border-radius: 50%;
+    opacity: 0.4;
+    z-index: -1; /* tăng từ -1 lên 0 để không bị ẩn dưới layout khác */
     pointer-events: none;
-    display: block; /* đảm bảo không bị display: none */
+    display: block;
   }
         /* Welcome screen */
         #welcomeScreen h1 {
