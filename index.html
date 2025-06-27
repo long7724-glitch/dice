@@ -705,24 +705,30 @@
       @media (max-width: 480px) {
          
 .cube {
-  width: 80px;
+  width: 100px;
   height: 80px;
   transform: rotateX(20deg) rotateY(30deg);
 }
-.cube-wrapper {
-  width: 80px;
-  height: 80px;
-  margin-bottom: 20px;
-   position: relative;
-}
+ .cube-wrapper {
+    position: relative; /* đảm bảo bóng bám đúng */
+    width: 80px;
+    height: 80px;
+    margin-bottom: 20px;
+  }
 
-
-
-.cube-shadow {
-  width: 90px;
-  height: 14px;
-  bottom: -6px;
-}
+  .cube-shadow {
+    position: absolute;
+    width: 90px;
+    height: 14px;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%) scale(0.8);
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.5), transparent 70%);
+    opacity: 0.5;
+    z-index: -1; /* nằm dưới cube */
+    pointer-events: none;
+    display: block; /* đảm bảo không bị display: none */
+  }
         /* Welcome screen */
         #welcomeScreen h1 {
           font-size: 1.5rem;
