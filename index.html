@@ -335,57 +335,49 @@
 
       .dice-container {
         display: flex;
-
         gap: 32px;
-
         justify-content: center;
-
-        align-items: center;
-
+        align-items: flex-end; /* Đảm bảo đáy xúc xắc thẳng hàng */
         margin: 16px 0;
-
-        perspective: 800px; /* Để có 3D */
-      }
-
-      .cube {
-        width: 100px;
-
-        height: 100px;
-
-        position: relative;
-
-        transform-style: preserve-3d;
-
-        transition: transform 0.8s;
-
-        transform: rotateX(20deg) rotateY(30deg);
+        perspective: 800px;
       }
 
       .cube-wrapper {
         position: relative;
         width: 100px;
+        height: 120px; /* tăng chiều cao để chứa bóng */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+      }
+
+      .cube {
+        width: 100px;
         height: 100px;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.8s;
+        transform: rotateX(20deg) rotateY(30deg);
       }
 
       .cube-shadow {
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%) scale(0.9);
-  width: 90px;
-  height: 14px;
-  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.6), transparent 70%);
-  border-radius: 50%;
-  opacity: 0.5;
-  z-index: -1;
-  transition: transform 0.4s ease, opacity 0.4s ease;
-  pointer-events: none;
-}
-
-
-
-
-
+        width: 90px;
+        height: 14px;
+        background: radial-gradient(
+          ellipse at center,
+          rgba(0, 0, 0, 0.5),
+          transparent 70%
+        );
+        border-radius: 50%;
+        position: absolute;
+        top: 96px; /* đúng bên dưới cube */
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0.5;
+        z-index: -1;
+        pointer-events: none;
+      }
 
       .cube.rolling {
         animation: roll3D 0.8s ease-in-out;
@@ -703,33 +695,36 @@
       }
 
       @media (max-width: 480px) {
-         
-.cube {
-  width: 80px;
-  height: 80px;
-  transform: rotateX(20deg) rotateY(30deg);
-}
- .cube-wrapper {
-    position: relative; /* đảm bảo bóng bám đúng */
-    width: 80px;
-    height: 80px;
-    margin-bottom: 10px;
-  }
+        .cube {
+          width: 80px;
+          height: 80px;
+          transform: rotateX(20deg) rotateY(30deg);
+        }
+        .cube-wrapper {
+          position: relative; /* đảm bảo bóng bám đúng */
+          width: 80px;
+          height: 100px;
+          margin-bottom: 5px;
+        }
 
-.cube-shadow {
-    position: absolute;
-    width: 70px; /* vừa với cube nhỏ hơn */
-    height: 12px;
-   
-    left: 50%;
-    transform: translateX(-50%) scale(0.9);
-    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.4), transparent 70%);
-    border-radius: 50%;
-    opacity: 0.4;
-    z-index: -1; /* tăng từ -1 lên 0 để không bị ẩn dưới layout khác */
-    pointer-events: none;
-    display: block;
-  }
+        .cube-shadow {
+          position: absolute;
+          width: 70px; /* vừa với cube nhỏ hơn */
+          height: 12px;
+          top: 77px;
+          left: 50%;
+          transform: translateX(-50%) scale(0.9);
+          background: radial-gradient(
+            ellipse at center,
+            rgba(0, 0, 0, 0.4),
+            transparent 70%
+          );
+          border-radius: 50%;
+          opacity: 0.4;
+          z-index: -1; /* tăng từ -1 lên 0 để không bị ẩn dưới layout khác */
+          pointer-events: none;
+          display: block;
+        }
         /* Welcome screen */
         #welcomeScreen h1 {
           font-size: 1.5rem;
@@ -794,7 +789,8 @@
           border-radius: 20px;
           gap: 1rem;
           flex-direction: column;
-          justify-content: space-around;
+          justify-content: flex-start;
+          gap: 1rem;
         }
 
         /* Dice container & cubes */
@@ -805,7 +801,6 @@
 
         .cube,
         .dice {
-         
           width: 80px;
           height: 80px;
         }
@@ -821,16 +816,24 @@
         }
 
         /* Định nghĩa lại transform đúng với kích thước mới */
-      .face1 { transform: rotateY(0deg) translateZ(40px); }
-.face2 { transform: rotateY(90deg) translateZ(40px); }
-.face3 { transform: rotateY(-90deg) translateZ(40px); }
-.face4 { transform: rotateX(90deg) translateZ(40px); }
-.face5 { transform: rotateX(-90deg) translateZ(40px); }
-.face6 { transform: rotateY(180deg) translateZ(40px); }
-
-   
-
-
+        .face1 {
+          transform: rotateY(0deg) translateZ(40px);
+        }
+        .face2 {
+          transform: rotateY(90deg) translateZ(40px);
+        }
+        .face3 {
+          transform: rotateY(-90deg) translateZ(40px);
+        }
+        .face4 {
+          transform: rotateX(90deg) translateZ(40px);
+        }
+        .face5 {
+          transform: rotateX(-90deg) translateZ(40px);
+        }
+        .face6 {
+          transform: rotateY(180deg) translateZ(40px);
+        }
 
         /* Roll button */
         #rollButton {
@@ -1204,63 +1207,62 @@
       }
 
       // Xử lý lắc
-     rollButton.onclick = () => {
-  clickSound.play();
+      rollButton.onclick = () => {
+        clickSound.play();
 
-  if (!selectedGuess) {
-    showPopup(
-      `⚠️ Vui lòng chọn <strong>một tổng bất kỳ</strong> trước khi lắc!`,
-      "OK"
-    );
-    return;
-  }
+        if (!selectedGuess) {
+          showPopup(
+            `⚠️ Vui lòng chọn <strong>một tổng bất kỳ</strong> trước khi lắc!`,
+            "OK"
+          );
+          return;
+        }
 
-  rollSound.currentTime = 0;
-  rollSound.play();
+        rollSound.currentTime = 0;
+        rollSound.play();
 
-  // Random hướng xoay mỗi lần
-  const rx = Math.floor(Math.random() * 2 + 1); // 1 hoặc 2
-  const ry = Math.floor(Math.random() * 2 + 1);
+        // Random hướng xoay mỗi lần
+        const rx = Math.floor(Math.random() * 2 + 1); // 1 hoặc 2
+        const ry = Math.floor(Math.random() * 2 + 1);
 
-  // Reset animation (xóa rồi thêm lại để tái chạy được)
-  dice1.style.animation = "none";
-  dice2.style.animation = "none";
-  void dice1.offsetWidth; // force reflow
-  void dice2.offsetWidth;
+        // Reset animation (xóa rồi thêm lại để tái chạy được)
+        dice1.style.animation = "none";
+        dice2.style.animation = "none";
+        void dice1.offsetWidth; // force reflow
+        void dice2.offsetWidth;
 
-  dice1.style.animation = `roll3DEnhanced 0.8s ease-in-out`;
-  dice2.style.animation = `roll3DEnhanced 0.8s ease-in-out`;
+        dice1.style.animation = `roll3DEnhanced 0.8s ease-in-out`;
+        dice2.style.animation = `roll3DEnhanced 0.8s ease-in-out`;
 
-  // 👇 Xử lý bóng thu nhỏ lại
-  const shadow1 = dice1.parentElement.querySelector(".cube-shadow");
-  const shadow2 = dice2.parentElement.querySelector(".cube-shadow");
+        // 👇 Xử lý bóng thu nhỏ lại
+        const shadow1 = dice1.parentElement.querySelector(".cube-shadow");
+        const shadow2 = dice2.parentElement.querySelector(".cube-shadow");
 
-  shadow1.style.transform = 'translateX(-50%) scale(0.6)';
-  shadow1.style.opacity = '0.2';
-  shadow2.style.transform = 'translateX(-50%) scale(0.6)';
-  shadow2.style.opacity = '0.2';
+        shadow1.style.transform = "translateX(-50%) scale(0.6)";
+        shadow1.style.opacity = "0.2";
+        shadow2.style.transform = "translateX(-50%) scale(0.6)";
+        shadow2.style.opacity = "0.2";
 
-  setTimeout(() => {
-    let d1 = Math.floor(Math.random() * 6) + 1,
-      d2 = Math.floor(Math.random() * 6) + 1;
+        setTimeout(() => {
+          let d1 = Math.floor(Math.random() * 6) + 1,
+            d2 = Math.floor(Math.random() * 6) + 1;
 
-    setDiceFace(dice1, d1);
-    setDiceFace(dice2, d2);
+          setDiceFace(dice1, d1);
+          setDiceFace(dice2, d2);
 
-    // Remove animation
-    dice1.style.animation = "";
-    dice2.style.animation = "";
+          // Remove animation
+          dice1.style.animation = "";
+          dice2.style.animation = "";
 
-    // 👇 Trả lại bóng như cũ
-    shadow1.style.transform = 'translateX(-50%) scale(1)';
-    shadow1.style.opacity = '0.4';
-    shadow2.style.transform = 'translateX(-50%) scale(1)';
-    shadow2.style.opacity = '0.4';
+          // 👇 Trả lại bóng như cũ
+          shadow1.style.transform = "translateX(-50%) scale(1)";
+          shadow1.style.opacity = "0.4";
+          shadow2.style.transform = "translateX(-50%) scale(1)";
+          shadow2.style.opacity = "0.4";
 
-    checkGuess(d1 + d2);
-  }, 800);
-};
-
+          checkGuess(d1 + d2);
+        }, 800);
+      };
 
       function setDiceFace(cube, num) {
         let x = 0,
