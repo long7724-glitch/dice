@@ -703,12 +703,26 @@
       }
 
       @media (max-width: 480px) {
-         .cube-wrapper,
+         
 .cube {
   width: 80px;
   height: 80px;
+  transform: rotateX(20deg) rotateY(30deg);
+}
+.cube-wrapper {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 20px;
+   position: relative;
 }
 
+
+
+.cube-shadow {
+  width: 90px;
+  height: 14px;
+  bottom: -6px;
+}
         /* Welcome screen */
         #welcomeScreen h1 {
           font-size: 1.5rem;
@@ -807,11 +821,7 @@
 .face5 { transform: rotateX(-90deg) translateZ(40px); }
 .face6 { transform: rotateY(180deg) translateZ(40px); }
 
-   .cube-shadow {
-  width: 90px;
-  height: 14px;
-  bottom: -6px;
-}
+   
 
 
 
