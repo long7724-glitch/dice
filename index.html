@@ -11,9 +11,13 @@
     <style>
       body {
         margin: 0;
+
         font-family: "Comic Sans MS", sans-serif;
+
         background: linear-gradient(135deg, #ffe5ec, #ffcad4);
+
         color: #333;
+
         transition: background 0.5s, color 0.5s;
       }
 
@@ -21,360 +25,574 @@
       select,
       button {
         border-radius: 999px;
+
         padding: 10px;
+
         border: none;
+
         font-weight: bold;
+
         cursor: pointer;
+
         transition: all 0.3s;
       }
+
       input {
         border: 2px solid #ff8fa3;
+
         text-align: center;
+
         outline: none;
+
         width: 70%;
+
         max-width: 250px;
       }
+
       input:focus {
         border-color: #ff4d6d;
+
         box-shadow: 0 0 8px rgba(255, 77, 109, 0.3);
       }
+
       button {
         margin-top: 16px;
+
         background: #e30931;
+
         color: #fff;
+
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       }
+
       button:hover {
         background: #ff4d6d;
+
         transform: scale(1.05);
       }
+
       button:disabled {
         opacity: 0.5;
+
         cursor: not-allowed;
       }
 
       #welcomeScreen {
         position: fixed;
+
         inset: 0;
+
         background: #ff8fa3;
+
         color: #fff;
+
         z-index: 2000;
+
         display: flex;
+
         flex-direction: column;
+
         align-items: center;
+
         justify-content: center;
       }
 
       #gameHeader {
         position: fixed;
+
         top: 0;
+
         left: 0;
+
         width: 100%;
+
         background: #ff8fa3;
+
         color: #fff;
+
         padding: 10px 20px;
+
         display: none;
+
         align-items: center;
+
         justify-content: space-between;
+
         z-index: 100;
       }
 
       .leftButtons {
         display: flex;
+
         gap: 5px;
+
         margin-right: 40px;
       }
 
       .leftButtons button#settingsButton {
         background: transparent;
+
         border: none;
+
         padding: 0.5rem;
+
         font-size: 1.5rem;
+
         color: #333;
       }
+
       .leftButtons button#settingsButton:active {
         color: #ff8fa3;
       }
 
       /* Popup overlay */
+
+      /* Popup backdrop: căn giữa popup */
       .popup-backdrop {
         position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
+        inset: 0;
         background: rgba(0, 0, 0, 0.6);
-        display: none; /* Ẩn mặc định */
-        align-items: center;
-        justify-content: center;
-        padding: 1rem;
+        display: flex; /* flex để căn giữa */
+        align-items: center; /* căn giữa theo chiều dọc */
+        justify-content: center; /* căn giữa theo chiều ngang */
         z-index: 999;
+        padding: 1rem;
       }
 
       /* Khung popup */
+
       .popup-settings {
         background: #fff;
-        padding: 1rem;
-        border-radius: 12px;
+        padding: 1.5rem;
+        border-radius: 16px;
         width: 100%;
-        max-width: 320px;
+        max-width: 360px;
         box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-        text-align: left;
-        font-size: 0.9rem;
+        font-size: 0.95rem;
+
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
       }
 
-      /* Tiêu đề */
-      .popup-settings h2 {
-        font-size: 1.25rem;
-        margin-bottom: 0.75rem;
-        text-align: center;
-      }
+      .popup-settings h2,
       .popup-settings h3 {
-        font-size: 1rem;
-        margin: 1rem 0 0.5rem;
-        text-align: left;
+        text-align: center;
+        margin: 0;
       }
 
-      /* Input checkbox và range */
       .popup-settings label {
         display: flex;
-        align-items: center;
+        flex-direction: column;
+        align-items: stretch;
         gap: 0.5rem;
-        margin-bottom: 0.5rem;
-      }
-      .popup-settings input[type="range"] {
-        width: 100%;
-        accent-color: #ff8fa3; /* màu của thanh kéo */
-      }
-      .popup-settings button#closeSettings {
-        background: #ff8fa3;
-        border: none;
-        padding: 0.5rem 1rem;
-        border-radius: 8px;
-        color: white;
-        width: 100%;
-        margin-top: 1rem;
-        cursor: pointer;
         font-weight: bold;
       }
-      .popup-settings button#closeSettings:hover {
-        background: #ff7388;
+
+      .popup-settings input[type="range"] {
+        width: 100%;
+        accent-color: #ff8fa3;
       }
 
-      /* Color boxes */
-      .color-options {
+      .popup-settings .color-options {
         display: flex;
-        justify-content: space-between;
+        flex-wrap: wrap;
         gap: 0.5rem;
+        justify-content: center;
       }
-      .color-box {
-        flex: 1;
-        padding-bottom: 24%;
+
+      .popup-settings .color-box {
+        flex: 0 0 22%;
+        padding-bottom: 22%;
+        border-radius: 8px;
         border: 2px solid transparent;
-        border-radius: 6px;
-        cursor: pointer;
         position: relative;
+        cursor: pointer;
       }
-      .color-box.selected {
+
+      .popup-settings .color-box.selected {
         border-color: black;
         box-shadow: 0 0 0 2px white, 0 0 0 4px black;
       }
+
+      .popup-settings button#closeSettings {
+        background: #ff8fa3;
+        color: white;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        border-radius: 12px;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      .popup-settings button#closeSettings:hover {
+        background: #ff4d6d;
+      }
+
+      /* Color boxes */
+
+      .color-options {
+        display: flex;
+
+        justify-content: space-between;
+
+        gap: 0.5rem;
+      }
+
+      .color-box {
+        flex: 1;
+
+        padding-bottom: 24%;
+
+        border: 2px solid transparent;
+
+        border-radius: 6px;
+
+        cursor: pointer;
+
+        position: relative;
+      }
+
+      .color-box.selected {
+        border-color: black;
+
+        box-shadow: 0 0 0 2px white, 0 0 0 4px black;
+      }
+
       .color-box::before {
         content: "";
+
         position: absolute;
+
         inset: 0;
+
         border-radius: 4px;
+
         background: inherit;
       }
 
       .game-container {
-        width: 90vw;
-        max-width: 500px;
-        padding: 16px;
-        box-sizing: border-box;
+        width: 500px;
+
+        height: 500px;
+
         background: rgba(255, 143, 163, 0.1);
+
         border: 2px solid #ff8fa3;
+
         border-radius: 32px;
-        margin: 2rem auto;
-        text-align: center;
+
+        padding: 24px;
+
+        box-sizing: border-box;
+
         perspective: 600px;
+
+        position: absolute;
+
+        top: 50%;
+
+        left: 50%;
+
+        transform: translate(-50%, -50%);
+
         display: flex;
+
         flex-direction: column;
+
         align-items: center;
+
         justify-content: space-evenly;
+
+        text-align: center;
       }
 
       .progress-bar {
         width: 90%;
+
         height: 20px;
+
         background: #ffe5ec;
+
         border-radius: 999px;
+
         overflow: hidden;
+
         box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.1);
       }
 
       .progress {
         height: 100%;
+
         width: 100%;
+
         transition: width 1s linear, background 0.5s;
       }
 
       /* Container xúc xắc để căn giữa */
+
       .dice-container {
         display: flex;
+
         gap: 32px;
+
         justify-content: center;
+
         align-items: center;
+
         margin: 16px 0;
+
         perspective: 800px; /* Để có 3D */
       }
+
       .cube {
         width: 100px;
+
         height: 100px;
+
         position: relative;
+
         transform-style: preserve-3d;
+
         transition: transform 0.8s;
+
+        transform: rotateX(20deg) rotateY(30deg);
       }
+
+      .cube-wrapper {
+        position: relative;
+        width: 100px;
+        height: 100px;
+      }
+
+      .cube-shadow {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%) scale(0.9);
+  width: 90px;
+  height: 14px;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.6), transparent 70%);
+  border-radius: 50%;
+  opacity: 0.5;
+  z-index: -1;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+  pointer-events: none;
+}
+
+
+
+
+
+
       .cube.rolling {
         animation: roll3D 0.8s ease-in-out;
       }
+
       .face {
         position: absolute;
+
         width: 100%;
+
         height: 100%;
+
         background: white;
+
         border-radius: 16px;
+
         border: 2px solid #ff8fa3;
+
         display: block;
       }
 
       .dot {
         width: 18px;
+
         height: 18px;
+
         background: #ff4d6d;
+
         border-radius: 50%;
+
         position: absolute;
       }
 
       /* Vị trí của chấm */
+
       .dot-center {
         top: 50%;
+
         left: 50%;
+
         transform: translate(-50%, -50%);
       }
+
       .dot-center-left {
         top: 50%;
+
         left: 20%;
+
         transform: translate(-50%, -50%);
       }
+
       .dot-center-right {
         top: 50%;
+
         right: 20%;
+
         transform: translate(50%, -50%);
       }
 
       .dot-top-left {
         top: 20%;
+
         left: 20%;
+
         transform: translate(-50%, -50%);
       }
+
       .dot-top-right {
         top: 20%;
+
         right: 20%;
+
         transform: translate(50%, -50%);
       }
+
       .dot-bottom-left {
         bottom: 20%;
+
         left: 20%;
+
         transform: translate(-50%, 50%);
       }
+
       .dot-bottom-right {
         bottom: 20%;
+
         right: 20%;
+
         transform: translate(50%, 50%);
       }
 
       /* Định nghĩa mặt cube bằng transform */
+
       .face1 {
         transform: rotateY(0deg) translateZ(50px);
       }
+
       .face2 {
         transform: rotateY(90deg) translateZ(50px);
       }
+
       .face3 {
         transform: rotateY(-90deg) translateZ(50px);
       }
+
       .face4 {
         transform: rotateX(90deg) translateZ(50px);
       }
+
       .face5 {
         transform: rotateX(-90deg) translateZ(50px);
       }
+
       .face6 {
         transform: rotateY(180deg) translateZ(50px);
       }
 
       .dice {
         width: 100px;
+
         height: 100px;
+
         border-radius: 16px;
+
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       }
 
       #rollButton {
         padding: 16px 32px;
+
         font-size: 1.3rem;
+
         border-radius: 999px;
       }
 
       #popupBackdrop {
         position: fixed;
+
         inset: 0;
+
         background: rgba(0, 0, 0, 0.4);
+
         z-index: 500;
+
         display: none;
+
         align-items: center;
+
         justify-content: center;
       }
+
       #popup {
         background: white;
+
         padding: 16px;
+
         border-radius: 20px;
+
         min-width: 320px;
-        width: 90vw;
+
         max-width: 400px;
-        max-height: none; /* không giới hạn */
-        overflow-y: visible; /* không thanh cuộn */
+
+        max-height: 80vh;
+
+        overflow-y: auto;
+
         text-align: center;
+
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
       }
 
       #popup h2 {
         margin-top: 0;
+
         color: #e30931;
+
         font-size: 1.5rem;
       }
 
       #popup h3 {
         margin: 12px 0 4px 0;
+
         font-size: 1.1rem;
+
         color: #333;
       }
 
       #popup table {
         width: 100%;
+
         border-collapse: collapse;
+
         margin: 8px 0;
       }
 
       #popup table th,
       #popup table td {
         border: 1px solid #ddd;
+
         padding: 4px;
+
         font-size: 0.85rem;
       }
 
       #popup table th {
         background: #ff8fa3;
+
         color: white;
       }
 
@@ -388,80 +606,251 @@
 
       .guess-options {
         width: 90%;
+
         display: grid;
+
         grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+
         gap: 12px;
       }
 
       .guess-option {
         padding: 12px;
+
         border-radius: 16px;
+
         background: #ff8fa3;
+
         color: #fff;
+
         font-size: 1.1rem;
+
         cursor: pointer;
+
         text-align: center;
+
         transition: transform 0.2s;
       }
+
       .guess-option:hover {
         background: #ff4d6d;
-        transform: scale(1.1);
-      }
-      .guess-option.selected {
-        background: #ff4d6d;
+
         transform: scale(1.1);
       }
 
-      @keyframes roll3D {
+      .guess-option.selected {
+        background: #ff4d6d;
+
+        transform: scale(1.1);
+      }
+
+      @keyframes roll3DEnhanced {
         0% {
-          transform: rotate3d(1, 1, 0, 0deg) scale(1);
+          transform: translateY(0px) rotate3d(1, 1, 0, 0deg) scale(1);
         }
-        25% {
-          transform: rotate3d(1, 1, 0, 180deg) scale(1.1);
+        20% {
+          transform: translateY(-60px) rotate3d(1, 1, 0, 180deg) scale(1.1); /* Nhảy cao hơn */
         }
         50% {
-          transform: rotate3d(1, 1, 0, 360deg) scale(1.1);
+          transform: translateY(-30px) rotate3d(1, 1, 0, 360deg) scale(1.05);
         }
-        75% {
-          transform: rotate3d(1, 1, 0, 540deg) scale(1.1);
+        80% {
+          transform: translateY(-10px) rotate3d(1, 1, 0, 540deg) scale(1.02);
         }
         100% {
-          transform: rotate3d(1, 1, 0, 720deg) scale(1);
+          transform: translateY(0px) rotate3d(1, 1, 0, 720deg) scale(1);
+        }
+      }
+
+      @keyframes rollWithShadow {
+        0% {
+          transform: translateY(0px) rotate3d(1, 1, 0, 0deg);
+          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        }
+        50% {
+          transform: translateY(-60px) rotate3d(1, 1, 0, 360deg);
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* bóng mờ hơn */
+        }
+        100% {
+          transform: translateY(0px) rotate3d(1, 1, 0, 720deg);
+          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
         }
       }
 
       .dice.rolling {
         animation: roll3D 0.8s ease-in-out;
+
         transform-origin: center center;
+
         backface-visibility: hidden;
+
         will-change: transform;
       }
 
       .fireworks {
         position: fixed;
+
         inset: 0;
+
         background: url("https://i.pinimg.com/originals/42/29/76/4229765e2a4957c0b1a4667424222c3b.gif")
           center/cover no-repeat;
+
         z-index: 999;
+
         pointer-events: none;
+
         animation: fadeOut 2s forwards;
       }
+
       @media (max-width: 480px) {
+         .cube-wrapper,
+.cube {
+  width: 80px;
+  height: 80px;
+}
+
+        /* Welcome screen */
         #welcomeScreen h1 {
-          font-size: 1.5rem; /* Thu nhỏ tiêu đề trên điện thoại */
-          padding: 0 12px; /* Thêm padding để không bị dính sát lề */
+          font-size: 1.5rem;
+          padding: 0 12px;
           text-align: center;
         }
+
         #welcomeScreen p {
           font-size: 0.9rem;
         }
+
         #playerNameInput {
           width: 90%;
           font-size: 0.9rem;
         }
+
         #confirmNameButton {
           padding: 8px 16px;
           font-size: 0.9rem;
+        }
+
+        /* Header game */
+        #gameHeader {
+          padding: 0.5rem 1rem;
+        }
+
+        .leftButtons {
+          margin-right: 30px;
+        }
+
+        .leftButtons button#settingsButton {
+          font-size: 1.2rem;
+          padding: 0.25rem;
+          margin-bottom: 10px;
+        }
+
+        .popup-settings {
+          width: 100%;
+          max-width: none;
+          padding: 1rem;
+          border-radius: 12px;
+          font-size: 0.9rem;
+        }
+
+        .popup-settings h2 {
+          font-size: 1.3rem;
+        }
+
+        .popup-settings h3 {
+          font-size: 1rem;
+        }
+
+        .popup-settings button#closeSettings {
+          font-size: 1rem;
+          padding: 0.6rem;
+        }
+
+        /* Game container */
+        .game-container {
+          width: 95vw;
+          padding: 1.2rem;
+          border-radius: 20px;
+          gap: 1rem;
+          flex-direction: column;
+          justify-content: space-around;
+        }
+
+        /* Dice container & cubes */
+        .dice-container {
+          gap: 24px;
+          flex-wrap: wrap;
+        }
+
+        .cube,
+        .dice {
+         
+          width: 80px;
+          height: 80px;
+        }
+
+        .dot {
+          width: 12px;
+          height: 12px;
+        }
+
+        .face {
+          width: 100%;
+          height: 100%;
+        }
+
+        /* Định nghĩa lại transform đúng với kích thước mới */
+      .face1 { transform: rotateY(0deg) translateZ(40px); }
+.face2 { transform: rotateY(90deg) translateZ(40px); }
+.face3 { transform: rotateY(-90deg) translateZ(40px); }
+.face4 { transform: rotateX(90deg) translateZ(40px); }
+.face5 { transform: rotateX(-90deg) translateZ(40px); }
+.face6 { transform: rotateY(180deg) translateZ(40px); }
+
+   .cube-shadow {
+  width: 90px;
+  height: 14px;
+  bottom: -6px;
+}
+
+
+
+        /* Roll button */
+        #rollButton {
+          padding: 10px 20px;
+          font-size: 1rem;
+        }
+
+        /* Progress bar */
+        .progress-bar {
+          width: 100%;
+          height: 16px;
+        }
+
+        /* Popup */
+        .popup-settings,
+        #popup {
+          width: 90%;
+          max-width: 320px;
+          padding: 1rem;
+          border-radius: 12px;
+        }
+
+        #popup h2 {
+          font-size: 1.25rem;
+        }
+
+        #popup h3 {
+          font-size: 1rem;
+        }
+
+        /* Guess options grid */
+        .guess-options {
+          grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+          gap: 10px;
+          padding: 10px;
+          font-size: 1rem;
+          margin-bottom: 4px;
         }
       }
 
@@ -543,85 +932,91 @@
     <div class="game-container">
       <div class="progress-bar"><div class="progress" id="progress"></div></div>
       <div class="dice-container">
-        <div class="cube" id="dice1">
-          <div class="face face1">
-            <span class="dot dot-center"></span>
-          </div>
+        <div class="cube-wrapper">
+          <div class="cube" id="dice1">
+            <div class="face face1">
+              <span class="dot dot-center"></span>
+            </div>
 
-          <div class="face face2">
-            <span class="dot dot-top-left"></span>
-            <span class="dot dot-bottom-right"></span>
-          </div>
+            <div class="face face2">
+              <span class="dot dot-top-left"></span>
+              <span class="dot dot-bottom-right"></span>
+            </div>
 
-          <div class="face face3">
-            <span class="dot dot-top-left"></span>
-            <span class="dot dot-center"></span>
-            <span class="dot dot-bottom-right"></span>
-          </div>
+            <div class="face face3">
+              <span class="dot dot-top-left"></span>
+              <span class="dot dot-center"></span>
+              <span class="dot dot-bottom-right"></span>
+            </div>
 
-          <div class="face face4">
-            <span class="dot dot-top-left"></span>
-            <span class="dot dot-top-right"></span>
-            <span class="dot dot-bottom-left"></span>
-            <span class="dot dot-bottom-right"></span>
-          </div>
+            <div class="face face4">
+              <span class="dot dot-top-left"></span>
+              <span class="dot dot-top-right"></span>
+              <span class="dot dot-bottom-left"></span>
+              <span class="dot dot-bottom-right"></span>
+            </div>
 
-          <div class="face face5">
-            <span class="dot dot-center"></span>
-            <span class="dot dot-top-left"></span>
-            <span class="dot dot-top-right"></span>
-            <span class="dot dot-bottom-left"></span>
-            <span class="dot dot-bottom-right"></span>
-          </div>
+            <div class="face face5">
+              <span class="dot dot-center"></span>
+              <span class="dot dot-top-left"></span>
+              <span class="dot dot-top-right"></span>
+              <span class="dot dot-bottom-left"></span>
+              <span class="dot dot-bottom-right"></span>
+            </div>
 
-          <div class="face face6">
-            <span class="dot dot-top-left"></span>
-            <span class="dot dot-top-right"></span>
-            <span class="dot dot-center-left"></span>
-            <span class="dot dot-center-right"></span>
-            <span class="dot dot-bottom-left"></span>
-            <span class="dot dot-bottom-right"></span>
+            <div class="face face6">
+              <span class="dot dot-top-left"></span>
+              <span class="dot dot-top-right"></span>
+              <span class="dot dot-center-left"></span>
+              <span class="dot dot-center-right"></span>
+              <span class="dot dot-bottom-left"></span>
+              <span class="dot dot-bottom-right"></span>
+            </div>
           </div>
+          <div class="cube-shadow"></div>
         </div>
-        <div class="cube" id="dice2">
-          <div class="face face1">
-            <span class="dot dot-center"></span>
-          </div>
+        <div class="cube-wrapper">
+          <div class="cube" id="dice2">
+            <div class="face face1">
+              <span class="dot dot-center"></span>
+            </div>
 
-          <div class="face face2">
-            <span class="dot dot-top-left"></span>
-            <span class="dot dot-bottom-right"></span>
-          </div>
+            <div class="face face2">
+              <span class="dot dot-top-left"></span>
+              <span class="dot dot-bottom-right"></span>
+            </div>
 
-          <div class="face face3">
-            <span class="dot dot-top-left"></span>
-            <span class="dot dot-center"></span>
-            <span class="dot dot-bottom-right"></span>
-          </div>
+            <div class="face face3">
+              <span class="dot dot-top-left"></span>
+              <span class="dot dot-center"></span>
+              <span class="dot dot-bottom-right"></span>
+            </div>
 
-          <div class="face face4">
-            <span class="dot dot-top-left"></span>
-            <span class="dot dot-top-right"></span>
-            <span class="dot dot-bottom-left"></span>
-            <span class="dot dot-bottom-right"></span>
-          </div>
+            <div class="face face4">
+              <span class="dot dot-top-left"></span>
+              <span class="dot dot-top-right"></span>
+              <span class="dot dot-bottom-left"></span>
+              <span class="dot dot-bottom-right"></span>
+            </div>
 
-          <div class="face face5">
-            <span class="dot dot-center"></span>
-            <span class="dot dot-top-left"></span>
-            <span class="dot dot-top-right"></span>
-            <span class="dot dot-bottom-left"></span>
-            <span class="dot dot-bottom-right"></span>
-          </div>
+            <div class="face face5">
+              <span class="dot dot-center"></span>
+              <span class="dot dot-top-left"></span>
+              <span class="dot dot-top-right"></span>
+              <span class="dot dot-bottom-left"></span>
+              <span class="dot dot-bottom-right"></span>
+            </div>
 
-          <div class="face face6">
-            <span class="dot dot-top-left"></span>
-            <span class="dot dot-top-right"></span>
-            <span class="dot dot-center-left"></span>
-            <span class="dot dot-center-right"></span>
-            <span class="dot dot-bottom-left"></span>
-            <span class="dot dot-bottom-right"></span>
+            <div class="face face6">
+              <span class="dot dot-top-left"></span>
+              <span class="dot dot-top-right"></span>
+              <span class="dot dot-center-left"></span>
+              <span class="dot dot-center-right"></span>
+              <span class="dot dot-bottom-left"></span>
+              <span class="dot dot-bottom-right"></span>
+            </div>
           </div>
+          <div class="cube-shadow"></div>
         </div>
       </div>
       <button id="rollButton">🎲 Lắc xúc xắc</button>
@@ -792,29 +1187,63 @@
       }
 
       // Xử lý lắc
-      rollButton.onclick = () => {
-        clickSound.play();
-        if (!selectedGuess) {
-          showPopup(
-            `⚠️ Vui lòng chọn <strong>một tổng bất kỳ</strong> trước khi lắc!`,
-            "OK"
-          );
-          return;
-        }
-        rollSound.currentTime = 0; // tua về đầu
-        rollSound.play();
-        dice1.classList.add("rolling");
-        dice2.classList.add("rolling");
-        setTimeout(() => {
-          let d1 = Math.floor(Math.random() * 6) + 1,
-            d2 = Math.floor(Math.random() * 6) + 1;
-          setDiceFace(dice1, d1);
-          setDiceFace(dice2, d2);
-          dice1.classList.remove("rolling");
-          dice2.classList.remove("rolling");
-          checkGuess(d1 + d2);
-        }, 800);
-      };
+     rollButton.onclick = () => {
+  clickSound.play();
+
+  if (!selectedGuess) {
+    showPopup(
+      `⚠️ Vui lòng chọn <strong>một tổng bất kỳ</strong> trước khi lắc!`,
+      "OK"
+    );
+    return;
+  }
+
+  rollSound.currentTime = 0;
+  rollSound.play();
+
+  // Random hướng xoay mỗi lần
+  const rx = Math.floor(Math.random() * 2 + 1); // 1 hoặc 2
+  const ry = Math.floor(Math.random() * 2 + 1);
+
+  // Reset animation (xóa rồi thêm lại để tái chạy được)
+  dice1.style.animation = "none";
+  dice2.style.animation = "none";
+  void dice1.offsetWidth; // force reflow
+  void dice2.offsetWidth;
+
+  dice1.style.animation = `roll3DEnhanced 0.8s ease-in-out`;
+  dice2.style.animation = `roll3DEnhanced 0.8s ease-in-out`;
+
+  // 👇 Xử lý bóng thu nhỏ lại
+  const shadow1 = dice1.parentElement.querySelector(".cube-shadow");
+  const shadow2 = dice2.parentElement.querySelector(".cube-shadow");
+
+  shadow1.style.transform = 'translateX(-50%) scale(0.6)';
+  shadow1.style.opacity = '0.2';
+  shadow2.style.transform = 'translateX(-50%) scale(0.6)';
+  shadow2.style.opacity = '0.2';
+
+  setTimeout(() => {
+    let d1 = Math.floor(Math.random() * 6) + 1,
+      d2 = Math.floor(Math.random() * 6) + 1;
+
+    setDiceFace(dice1, d1);
+    setDiceFace(dice2, d2);
+
+    // Remove animation
+    dice1.style.animation = "";
+    dice2.style.animation = "";
+
+    // 👇 Trả lại bóng như cũ
+    shadow1.style.transform = 'translateX(-50%) scale(1)';
+    shadow1.style.opacity = '0.4';
+    shadow2.style.transform = 'translateX(-50%) scale(1)';
+    shadow2.style.opacity = '0.4';
+
+    checkGuess(d1 + d2);
+  }, 800);
+};
+
 
       function setDiceFace(cube, num) {
         let x = 0,
@@ -989,7 +1418,8 @@
     <h2>Bạn được ${score} điểm</h2>
     ${probabilityTable}
     ${historyHTML}
-    <button id="popupOk" style="margin-top: 12px;">Chơi lại</button>
+    <button id="popupOk" style="margin: 12px auto 0; display: block;">Chơi lại</button>
+
   `;
 
         document.getElementById("popupOk").onclick = resetGame;
